@@ -10,14 +10,16 @@ namespace CaixeiroViajante
     {
         static void Main(string[] args)
         {
+            int paramMaximoTentativasSemMelhora = 100000; // Usado nos métodos: Descida com Random Improvement
+
             string opcao;
             bool encerrarExecucao, opcaoInvalida;
             string titulo = string.Empty;
 
             int[] solucao = null;
 
-            int numeroCidades = Util.LerNumeroCidades("C50INFO.txt");
-            double[,] distancias = Util.LerMatrizDistancias("C50.txt", numeroCidades);
+            int numeroCidades = Util.Arquivo.LerNumeroCidades("C50INFO.txt");
+            double[,] distancias = Util.Arquivo.LerMatrizDistancias("C50.txt", numeroCidades);
             
             do
             {
@@ -36,8 +38,8 @@ namespace CaixeiroViajante
                 Console.WriteLine("\t[01d] Solução parcialmente gulosa (inserção mais barata)");
                 Console.WriteLine("\t[01e] Solução aleatória - 01 default");
                 Console.WriteLine("[02] Descida com Best Improvement");
-                Console.WriteLine("[03] Descida randomica");
-                Console.WriteLine("[04] Descida com Primeiro de Melhora (First Improvement)");
+                Console.WriteLine("[03] Descida com Random Improvement");
+                Console.WriteLine("[04] Descida com First Improvement");
                 Console.WriteLine("[05] Multi-Start");
                 Console.WriteLine("[06] Simulated Annealing");
                 Console.WriteLine("[07] Busca Tabu");
@@ -60,10 +62,10 @@ namespace CaixeiroViajante
                 switch (opcao)
                 {
                     case "01a":
-                        solucao = ConstrutorSolucao.ConstruirSolucaoVizinhoMaisProximo(numeroCidades, distancias);
+                        solucao = ConstrutorSolucao.VizinhoMaisProximo(numeroCidades, distancias);
 
                         titulo = "[01a] Solução gulosa (vizinho mais próximo)";
-                        Util.ImprimirResultadoExecucao(titulo, solucao, distancias);
+                        Util.Impressao.ImprimirResultadoExecucao(titulo, solucao, distancias);
                         break;
                     case "01b":
                         titulo = "[01b] Solução parcialmente gulosa (vizinho mais próximo)";
@@ -79,20 +81,37 @@ namespace CaixeiroViajante
                         break;
                     case "01":
                     case "01e":
-                        solucao = ConstrutorSolucao.ConstruirSolucaoSequencial(numeroCidades);
-                        Util.EmbaralharVetor(solucao);
+                        solucao = ConstrutorSolucao.Aleatoria(numeroCidades);
 
                         titulo = "[01e] Solução aleatória";
-                        Util.ImprimirResultadoExecucao(titulo, solucao, distancias);
+                        Util.Impressao.ImprimirResultadoExecucao(titulo, solucao, distancias);
                         break;
                     case "02":
-                        Console.WriteLine("Não implementado");
+                        if (solucao == null)
+                            solucao = ConstrutorSolucao.VizinhoMaisProximo(numeroCidades, distancias);
+
+                        ConstrutorSolucao.DescidaBestImprovement(solucao, distancias);
+
+                        titulo = "[02] Descida com Best Improvement";
+                        Util.Impressao.ImprimirResultadoExecucao(titulo, solucao, distancias);
                         break;
                     case "03":
-                        Console.WriteLine("Não implementado");
+                        if (solucao == null)
+                            solucao = ConstrutorSolucao.VizinhoMaisProximo(numeroCidades, distancias);
+
+                        ConstrutorSolucao.DescidaRandomImprovement(solucao, distancias, paramMaximoTentativasSemMelhora);
+
+                        titulo = "[03] Descida com Random Improvement";
+                        Util.Impressao.ImprimirResultadoExecucao(titulo, solucao, distancias);
                         break;
                     case "04":
-                        Console.WriteLine("Não implementado");
+                        if (solucao == null)
+                            solucao = ConstrutorSolucao.VizinhoMaisProximo(numeroCidades, distancias);
+
+                        ConstrutorSolucao.DescidaFirstImprovement(solucao, distancias);
+
+                        titulo = "[04] Descida com First Improvement";
+                        Util.Impressao.ImprimirResultadoExecucao(titulo, solucao, distancias);
                         break;
                     case "05":
                         Console.WriteLine("Não implementado");
@@ -125,7 +144,7 @@ namespace CaixeiroViajante
                         Console.WriteLine("Não implementado");
                         break;
                     case "15":
-                        Util.ImprimirMatrizDistancias(distancias);
+                        Util.Impressao.ImprimirMatrizDistancias(distancias);
                         break;
                     case "0":
                         encerrarExecucao = true;
