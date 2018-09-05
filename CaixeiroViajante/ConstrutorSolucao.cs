@@ -8,7 +8,7 @@ namespace CaixeiroViajante
 {
     public static class ConstrutorSolucao
     {
-        #region [ [01*] Soluções iniciais ]
+        #region [01*] Soluções iniciais 
 
         public static int[] VizinhoMaisProximo(int numeroCidades, double[,] distancias) // Construcao.cpp ->  constroi_solucao_gulosa_vizinho_mais_proximo
         {
@@ -288,6 +288,14 @@ namespace CaixeiroViajante
 
         #endregion
 
+        #region [06] Simulated Annealing
+
+        // TODO: próximo a implementar
+
+        #endregion
+
+        #region [ Métodos auxiliares ]
+
         private static double CalcularDelta(int numeroCidades, int[] solucaoAtual, double[,] distancias, int i, int j) // Descida.cpp -> calcula_delta
         {
             int i_antes, i_depois, j_antes, j_depois;
@@ -311,5 +319,7 @@ namespace CaixeiroViajante
 
             return distancias[solucaoAtual[i_antes], solucaoAtual[i]] + distancias[solucaoAtual[i], solucaoAtual[i_depois]] + distancias[solucaoAtual[j_antes], solucaoAtual[j]] + distancias[solucaoAtual[j], solucaoAtual[j_depois]];
         }
+
+        #endregion
     }
 }
