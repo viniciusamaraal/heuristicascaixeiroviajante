@@ -66,9 +66,11 @@ namespace CaixeiroViajante
             return solucao;
         }
 
-        public static int[] GulosaMaisBarata(int numeroCidades)
+        public static int[] GulosaInsercaoMaisBarata(int numeroCidades)
         {
             var solucao = new int[numeroCidades];
+
+            // TODO: implementar este
 
             return solucao;
         }
@@ -291,6 +293,71 @@ namespace CaixeiroViajante
         #region [06] Simulated Annealing
 
         // TODO: próximo a implementar
+
+        #endregion
+
+        #region [08] ILS - Iterate Local Search
+
+        public static double ILS(int[] solucaoAtual, double[,] distancias, int numMaximoIterSemMelhora, int numMaximoIterMesmoNivel)
+        {
+            int iterAtual = 1, melhorIter = 0, nivelAtual = 1, iterMesmoNivel = 1;
+            int[] solucaoPerturbada;
+
+            double resultadoFOsolucaoAtual = Util.Calculo.CalcularFuncaoObjetivo(solucaoAtual, distancias);
+            while (iterAtual - melhorIter < numMaximoIterSemMelhora)
+            {
+                solucaoPerturbada = PerturbarVetor(solucaoAtual, nivelAtual);
+                DescidaFirstImprovement(solucaoPerturbada, distancias);
+
+                double resultadoFOsolucaoPerturbada = Util.Calculo.CalcularFuncaoObjetivo(solucaoPerturbada, distancias);
+                if (resultadoFOsolucaoPerturbada < resultadoFOsolucaoAtual)
+                {
+                    Array.Copy(solucaoPerturbada, solucaoAtual, solucaoAtual.Length); 
+                    resultadoFOsolucaoAtual = resultadoFOsolucaoPerturbada;
+                    melhorIter = iterAtual;
+                    nivelAtual = 1;
+                    iterMesmoNivel = 1;
+                }
+                else
+                {
+                    if (iterMesmoNivel >= numMaximoIterMesmoNivel)
+                    {
+                        nivelAtual++;
+                        iterMesmoNivel = 1;
+                    }
+                    else
+                    {
+                        iterMesmoNivel++;
+                    }
+                }
+
+                iterAtual++;
+            }
+
+            return resultadoFOsolucaoAtual;
+        }
+
+        private static int[] PerturbarVetor(int[] solucaoAtual, int nivelAtual)
+        {
+            int[] solucaoPerturbada = new int[solucaoAtual.Length];
+            Array.Copy(solucaoAtual, solucaoPerturbada, solucaoAtual.Length);
+
+            int posicao1 = 0, posicao2 = 0, aux = 0;
+
+            int numeroTrocas = 0;
+            while (numeroTrocas < nivelAtual)
+            {
+                Util.Calculo.CalcularDuasPosicoesAleatoriasDiferentes(0, solucaoAtual.Length, ref posicao1, ref posicao2);
+
+                aux = solucaoPerturbada[posicao1];
+                solucaoPerturbada[posicao1] = solucaoPerturbada[posicao2];
+                solucaoPerturbada[posicao2] = aux;
+
+                numeroTrocas++;
+            }
+
+            return solucaoPerturbada;
+        }
 
         #endregion
 

@@ -123,7 +123,15 @@ namespace CaixeiroViajante
                         Console.WriteLine("Não implementado");
                         break;
                     case "08":
-                        Console.WriteLine("Não implementado");
+                        if (solucao == null)
+                            solucao = ConstrutorSolucao.VizinhoMaisProximo(numeroCidades, distancias);
+
+                        int numMaximoIteracoesSemMelhora = 30;
+                        int numMaximoIteracoesMesmoNivel = 10;
+                        ConstrutorSolucao.ILS(solucao, distancias, numMaximoIteracoesSemMelhora, numMaximoIteracoesMesmoNivel);
+
+                        titulo = "[08] ILS";
+                        Util.Impressao.ImprimirResultadoExecucao(titulo, solucao, distancias);
                         break;
                     case "09":
                         Console.WriteLine("Não implementado");

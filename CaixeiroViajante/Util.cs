@@ -50,7 +50,7 @@ namespace CaixeiroViajante
                         matrizDistancias[i, i] = 0;
                         for (int j = i + 1; j < numeroCidades; j++)
                         {
-                            matrizDistancias[i, j] = (float)Math.Sqrt(Math.Pow(vet_x[i] - vet_x[j], 2) + Math.Pow(vet_y[i] - vet_y[j], 2));
+                            matrizDistancias[i, j] = Math.Sqrt(Math.Pow(vet_x[i] - vet_x[j], 2) + Math.Pow(vet_y[i] - vet_y[j], 2));
                             matrizDistancias[j, i] = matrizDistancias[i, j];
                         }
                     }
@@ -69,7 +69,7 @@ namespace CaixeiroViajante
                 for (int i = 0; i < solucao.Length - 1; i++)
                     distanciaPercorrida += matrizDistancias[solucao[i], solucao[i + 1]];
 
-                distanciaPercorrida += matrizDistancias[solucao.Length - 1, 0];
+                distanciaPercorrida += matrizDistancias[solucao[solucao.Length - 1], 0];
 
                 return distanciaPercorrida;
             }
@@ -112,7 +112,11 @@ namespace CaixeiroViajante
 
             public static void ImprimirMatrizDistancias(double[,] distancias)
             {
-                Console.SetWindowSize(120, 60);
+                try
+                {
+                    Console.SetWindowSize(120, 60);
+                }
+                catch (Exception) { }
 
                 Console.Write("".PadRight(6, ' '));
                 for (int i = 0; i < distancias.GetLength(0); i++)
