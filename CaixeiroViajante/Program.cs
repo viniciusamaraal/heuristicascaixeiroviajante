@@ -124,11 +124,11 @@ namespace CaixeiroViajante
                         break;
                     case "08":
                         if (solucao == null)
-                            solucao = ConstrutorSolucao.VizinhoMaisProximo(numeroCidades, distancias);
+                            solucao = ConstrutorSolucao.Aleatoria(numeroCidades);
 
-                        int numMaximoIteracoesSemMelhora = 30;
-                        int numMaximoIteracoesMesmoNivel = 10;
-                        ConstrutorSolucao.ILS(solucao, distancias, numMaximoIteracoesSemMelhora, numMaximoIteracoesMesmoNivel);
+                        int numMaximoIteracoesSemMelhora = 300;
+                        int numMaximoIteracoesMesmoNivel = 150;
+                        ConstrutorSolucao.ILSSmart(solucao, distancias, numMaximoIteracoesSemMelhora, numMaximoIteracoesMesmoNivel);
 
                         titulo = "[08] ILS";
                         Util.Impressao.ImprimirResultadoExecucao(titulo, solucao, distancias);

@@ -298,7 +298,7 @@ namespace CaixeiroViajante
 
         #region [08] ILS - Iterate Local Search
 
-        public static double ILS(int[] solucaoAtual, double[,] distancias, int numMaximoIterSemMelhora, int numMaximoIterMesmoNivel)
+        public static double ILSSmart(int[] solucaoAtual, double[,] distancias, int numMaximoIterSemMelhora, int numMaximoIterMesmoNivel)
         {
             int iterAtual = 1, melhorIter = 0, nivelAtual = 1, iterMesmoNivel = 1;
             int[] solucaoPerturbada;
