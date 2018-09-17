@@ -296,6 +296,99 @@ namespace CaixeiroViajante
 
         #endregion
 
+        #region [07] Busca Tabu
+
+        public static double BuscaTabu(int[] solucaoAtual, double[,] distancias, int numMaximoIterSemMelhora, int numIteracoesProibicao)
+        {
+            int iterAtual = 0, melhorIter = 0, melhor_i = -1, melhor_j = -1;
+            double resultadoFOMelhorSolucao, resultadoFOMelhorVizinho;
+            
+            int[,] matrizTabu = new int[solucaoAtual.Length, solucaoAtual.Length];
+
+            int[] melhorSolucao = new int[solucaoAtual.Length];
+            Array.Copy(solucaoAtual, melhorSolucao, solucaoAtual.Length);
+
+            resultadoFOMelhorVizinho = resultadoFOMelhorSolucao = Util.Calculo.CalcularFuncaoObjetivo(solucaoAtual, distancias);
+            while (iterAtual - melhorIter < numMaximoIterSemMelhora)
+            {
+                iterAtual++;
+
+                resultadoFOMelhorVizinho = CalcularMelhorVizinhoBuscaTabu(solucaoAtual, distancias, iterAtual, resultadoFOMelhorVizinho, resultadoFOMelhorSolucao, matrizTabu, ref melhor_i, ref melhor_j);
+
+                // Troca os elementos de acordo com a melhor vizinhança retornada
+                int aux = solucaoAtual[melhor_i];
+                solucaoAtual[melhor_i] = solucaoAtual[melhor_j];
+                solucaoAtual[melhor_j] = aux;
+
+                // Atualiza a matriz tabu com a nova restrição
+                matrizTabu[melhor_i, melhor_j] = iterAtual + numIteracoesProibicao;
+                matrizTabu[melhor_j, melhor_i] = iterAtual + numIteracoesProibicao;
+
+                // Verifica se a solução vizinha é melhor que a melhor solução encontrada até o momento
+                if (Math.Round(resultadoFOMelhorVizinho, 2) < Math.Round(resultadoFOMelhorSolucao, 2))
+                {
+                    melhorIter = iterAtual;
+                    resultadoFOMelhorSolucao = resultadoFOMelhorVizinho;
+
+                    int aux2 = melhorSolucao[melhor_i];
+                    melhorSolucao[melhor_i] = melhorSolucao[melhor_j];
+                    melhorSolucao[melhor_j] = aux2;
+
+                    Array.Copy(solucaoAtual, melhorSolucao, solucaoAtual.Length);
+                }
+            }
+
+            Array.Copy(melhorSolucao, solucaoAtual, solucaoAtual.Length);
+
+            return resultadoFOMelhorSolucao;
+        }
+
+
+        private static double CalcularMelhorVizinhoBuscaTabu(int[] solucaoAtual, double[,] distancias, int iteracaoAtual, double resultadoFOAtual, double resultadoFOMelhorSolucao, 
+            int[,] matrizRestricoes, ref int melhor_i, ref int melhor_j)
+        {
+            int aux;
+            double resultadoFOVizinho;
+
+            double resultadoFOMelhorVizinho = int.MaxValue;
+
+            for (int i = 0; i < solucaoAtual.Length - 1; i++)
+            {
+                for (int j = i + 1; j < solucaoAtual.Length; j++)
+                {
+                    double delta1 = CalcularDelta(solucaoAtual.Length, solucaoAtual, distancias, i, j);
+
+                    // Faz o movimento de troca da vizinhança
+                    aux = solucaoAtual[j];
+                    solucaoAtual[j] = solucaoAtual[i];
+                    solucaoAtual[i] = aux;
+
+                    double delta2 = CalcularDelta(solucaoAtual.Length, solucaoAtual, distancias, i, j);
+
+                    resultadoFOVizinho = resultadoFOAtual - delta1 + delta2;
+                    
+                    if (matrizRestricoes[i, j] < iteracaoAtual || resultadoFOVizinho < resultadoFOMelhorSolucao)
+                    {
+                        if (resultadoFOVizinho < resultadoFOMelhorVizinho)
+                        {
+                            melhor_i = i;
+                            melhor_j = j;
+                            resultadoFOMelhorVizinho = resultadoFOVizinho;
+                        }
+                    }
+
+                    // Desfaz o movimento de troca para analisar o restante da vizinhança
+                    aux = solucaoAtual[j];
+                    solucaoAtual[j] = solucaoAtual[i];
+                    solucaoAtual[i] = aux;
+                }
+            }
+
+            return resultadoFOMelhorVizinho;
+        }
+
+        #endregion
+
         #region [08] ILS - Iterate Local Search
 
         public static double ILSSmart(int[] solucaoAtual, double[,] distancias, int numMaximoIterSemMelhora, int numMaximoIterMesmoNivel)
@@ -312,7 +405,7 @@ namespace CaixeiroViajante
                 double resultadoFOsolucaoPerturbada = Util.Calculo.CalcularFuncaoObjetivo(solucaoPerturbada, distancias);
                 if (resultadoFOsolucaoPerturbada < resultadoFOsolucaoAtual)
                 {
-                    Array.Copy(solucaoPerturbada, solucaoAtual, solucaoAtual.Length); 
+                    Array.Copy(solucaoPerturbada, solucaoAtual, solucaoAtual.Length);
                     resultadoFOsolucaoAtual = resultadoFOsolucaoPerturbada;
                     melhorIter = iterAtual;
                     nivelAtual = 1;

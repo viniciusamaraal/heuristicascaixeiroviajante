@@ -120,15 +120,23 @@ namespace CaixeiroViajante
                         Console.WriteLine("Não implementado");
                         break;
                     case "07":
-                        Console.WriteLine("Não implementado");
+                        if (solucao == null)
+                            solucao = ConstrutorSolucao.Aleatoria(numeroCidades);
+
+                        int numMaximoIteracoesSemMelhoraILS = 300;
+                        int numIteracoesProibicao = 15;
+                        ConstrutorSolucao.BuscaTabu(solucao, distancias, numMaximoIteracoesSemMelhoraILS, numIteracoesProibicao);
+
+                        titulo = "[07] Busca Tabu";
+                        Util.Impressao.ImprimirResultadoExecucao(titulo, solucao, distancias);
                         break;
                     case "08":
                         if (solucao == null)
                             solucao = ConstrutorSolucao.Aleatoria(numeroCidades);
 
-                        int numMaximoIteracoesSemMelhora = 300;
+                        int numMaximoIteracoesSemMelhoraBT = 300;
                         int numMaximoIteracoesMesmoNivel = 150;
-                        ConstrutorSolucao.ILSSmart(solucao, distancias, numMaximoIteracoesSemMelhora, numMaximoIteracoesMesmoNivel);
+                        ConstrutorSolucao.ILSSmart(solucao, distancias, numMaximoIteracoesSemMelhoraBT, numMaximoIteracoesMesmoNivel);
 
                         titulo = "[08] ILS";
                         Util.Impressao.ImprimirResultadoExecucao(titulo, solucao, distancias);
