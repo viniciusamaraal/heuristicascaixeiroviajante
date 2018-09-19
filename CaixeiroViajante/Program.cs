@@ -117,7 +117,18 @@ namespace CaixeiroViajante
                         Console.WriteLine("Não implementado");
                         break;
                     case "06":
-                        Console.WriteLine("Não implementado");
+                        if (solucao == null)
+                            solucao = ConstrutorSolucao.VizinhoMaisProximo(numeroCidades, distancias);
+
+                        int numMaximoIteracoesTemperatura = 300;
+                        double fatorAlteracaoTemperatura = 0.1;
+                        int temperaturaInicial = 10;
+                        double temperaturaFinal = ConstrutorSolucao.CalcularTemperaturaInicialSimulatedAnealling(solucao, distancias, fatorAlteracaoTemperatura, fatorAlteracaoTemperatura, numMaximoIteracoesTemperatura, temperaturaInicial);
+                        ConstrutorSolucao.SimulatedAnnealing(solucao, distancias, fatorAlteracaoTemperatura, numMaximoIteracoesTemperatura, temperaturaInicial, temperaturaFinal);
+
+                        titulo = "[06] Simulated Annealing";
+                        Util.Impressao.ImprimirResultadoExecucao(titulo, solucao, distancias);
+
                         break;
                     case "07":
                         if (solucao == null)
