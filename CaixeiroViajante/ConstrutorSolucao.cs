@@ -295,26 +295,34 @@ namespace CaixeiroViajante
         public static double SimulatedAnnealing(int[] solucaoAtual, double[,] distancias, double fatorAlteracaoTemperatura, int numMaximoIteracoesTemperatura,
             double temperaturaInicial, double temperaturaFinal)
         {
-            int iteracaoAtualTemperatura, iTroca = -1, jTroca = -1;
-            double resultadoFOMelhorSolucao, resultadoFOVizinho, resultadoFOSolucaoAtual;
+            int iteracaoAtualTemperatura = 0, iTroca = -1, jTroca = -1, aux = 0;
+            double resultadoFOMelhorSolucao, resultadoFOSolucaoAtual, delta1 = 0, delta2 = 0, deltaFinal = 0;
 
             int[] melhorSolucao = new int[solucaoAtual.Length];
             Array.Copy(solucaoAtual, melhorSolucao, solucaoAtual.Length);
 
-            resultadoFOSolucaoAtual = resultadoFOVizinho = resultadoFOMelhorSolucao = Util.Calculo.CalcularFuncaoObjetivo(solucaoAtual, distancias);
+            resultadoFOSolucaoAtual = resultadoFOMelhorSolucao = Util.Calculo.CalcularFuncaoObjetivo(solucaoAtual, distancias);
             while (temperaturaInicial > temperaturaFinal)
             {
-                iteracaoAtualTemperatura = 0;
                 while (iteracaoAtualTemperatura < numMaximoIteracoesTemperatura)
                 {
                     iteracaoAtualTemperatura++;
-
-                    bool vizinhoMelhora = CalcularVizinhoAleatorio(solucaoAtual, distancias, resultadoFOSolucaoAtual, ref iTroca, ref jTroca, ref resultadoFOVizinho);
                     
+                    Util.Calculo.CalcularDuasPosicoesAleatoriasDiferentes(0, solucaoAtual.Length, ref iTroca, ref jTroca);
+                    delta1 = CalcularDelta(solucaoAtual.Length, solucaoAtual, distancias, iTroca, jTroca);
+
+                    aux = solucaoAtual[jTroca];
+                    solucaoAtual[jTroca] = solucaoAtual[iTroca];
+                    solucaoAtual[iTroca] = aux;
+
+                    delta2 = CalcularDelta(solucaoAtual.Length, solucaoAtual, distancias, iTroca, jTroca);
+
+                    deltaFinal = -delta1 + delta2;
+
                     // verifica se a solução gerada é melhor que a solução atual
-                    if (vizinhoMelhora)
+                    if (deltaFinal < 0)
                     {
-                        resultadoFOSolucaoAtual = resultadoFOVizinho;
+                        resultadoFOSolucaoAtual = resultadoFOSolucaoAtual + deltaFinal;
 
                         // verifica se a solução gerada é melhor que a melhor das soluções encontradas
                         if (resultadoFOSolucaoAtual < resultadoFOMelhorSolucao)
@@ -325,17 +333,16 @@ namespace CaixeiroViajante
                     }
                     else
                     {
-                        double delta = resultadoFOVizinho - resultadoFOSolucaoAtual;
                         double x;
                         x = new Random().NextDouble();
 
                         // verifica o grau de aceitação da solução de piora baseado na temperatura atual
-                        if (x < Math.Exp(-delta / temperaturaInicial))
+                        if (x < Math.Exp(-deltaFinal / temperaturaInicial))
+                            resultadoFOSolucaoAtual = resultadoFOSolucaoAtual + deltaFinal;
+                        else
                         {
-                            resultadoFOSolucaoAtual = resultadoFOVizinho;
-
-                            // Caso a solução seja aceita (mesmo de piora) refaz a troca desfeita pelo método [CalcularVizinhoAleatorio]
-                            int aux = solucaoAtual[iTroca];
+                            // Caso a solução não seja aceita desfaz a troca
+                            aux = solucaoAtual[iTroca];
                             solucaoAtual[iTroca] = solucaoAtual[jTroca];
                             solucaoAtual[jTroca] = aux;
                         }
@@ -343,6 +350,7 @@ namespace CaixeiroViajante
                 }
 
                 temperaturaInicial = temperaturaInicial * fatorAlteracaoTemperatura;
+                iteracaoAtualTemperatura = 0;
             }
 
             Array.Copy(melhorSolucao, solucaoAtual, solucaoAtual.Length);
@@ -351,10 +359,11 @@ namespace CaixeiroViajante
         }
 
         public static double CalcularTemperaturaInicialSimulatedAnealling(int[] solucaoAtual, double[,] distancias, 
-            double taxaAquecimento, double taxaResfriamento, int numMaximoIteracoesTemperatura, int temperaturaInicial)
+            double taxaAquecimento, double taxaResfriamento, int numMaximoIteracoesTemperatura, double temperaturaInicial)
         {
-            int i = -1, j = -1, aux, iteracaoAtual = 0, aceitos = 0;
-            double temperatura = 0, delta = 0;
+            int iTroca = -1, jTroca
+                = -1, aux, iteracaoAtual = 0, aceitos = 0;
+            double delta1 = 0, delta2 = 0, deltaFinal = 0;
             bool continua = true;
 
             while (continua)
@@ -366,39 +375,39 @@ namespace CaixeiroViajante
                 {
                     iteracaoAtual++;
 
-                    Util.Calculo.CalcularDuasPosicoesAleatoriasDiferentes(0, solucaoAtual.Length, ref i, ref j);
+                    Util.Calculo.CalcularDuasPosicoesAleatoriasDiferentes(0, solucaoAtual.Length, ref iTroca, ref jTroca);
+                    delta1 = CalcularDelta(solucaoAtual.Length, solucaoAtual, distancias, iTroca, jTroca);
 
-                    double delta1 = Util.Calculo.CalcularFuncaoObjetivo(solucaoAtual, distancias);
+                    aux = solucaoAtual[jTroca];
+                    solucaoAtual[jTroca] = solucaoAtual[iTroca];
+                    solucaoAtual[iTroca] = aux;
 
-                    aux = solucaoAtual[i];
-                    solucaoAtual[i] = solucaoAtual[j];
-                    solucaoAtual[j] = aux;
+                    delta2 = CalcularDelta(solucaoAtual.Length, solucaoAtual, distancias, iTroca, jTroca);
 
-                    double delta2 = Util.Calculo.CalcularFuncaoObjetivo(solucaoAtual, distancias);
-                    delta = -delta1 + delta2;
+                    deltaFinal = -delta1 + delta2;
 
-                    if (delta < 0)
+                    if (deltaFinal < 0)
                         aceitos++;
                     else
                     {
                         double x;
                         x = new Random().NextDouble();
-                        if (x < Math.Exp(-delta / temperaturaInicial))
+                        if (x < Math.Exp(-deltaFinal / temperaturaInicial))
                             aceitos++;
                     }
 
-                    aux = solucaoAtual[i];
-                    solucaoAtual[i] = solucaoAtual[j];
-                    solucaoAtual[j] = aux;
+                    aux = solucaoAtual[iTroca];
+                    solucaoAtual[iTroca] = solucaoAtual[jTroca];
+                    solucaoAtual[jTroca] = aux;
                 }
 
                 if (aceitos < taxaResfriamento * numMaximoIteracoesTemperatura)
-                    temperatura = taxaAquecimento * temperatura;
+                    temperaturaInicial = taxaAquecimento * temperaturaInicial;
                 else
                     continua = false;
             }
 
-            return temperatura;
+            return temperaturaInicial;
         }
 
         #endregion

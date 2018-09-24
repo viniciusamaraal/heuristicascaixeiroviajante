@@ -121,9 +121,9 @@ namespace CaixeiroViajante
                             solucao = ConstrutorSolucao.VizinhoMaisProximo(numeroCidades, distancias);
 
                         int numMaximoIteracoesTemperatura = 300;
-                        double fatorAlteracaoTemperatura = 0.1;
-                        int temperaturaInicial = 10;
-                        double temperaturaFinal = ConstrutorSolucao.CalcularTemperaturaInicialSimulatedAnealling(solucao, distancias, fatorAlteracaoTemperatura, fatorAlteracaoTemperatura, numMaximoIteracoesTemperatura, temperaturaInicial);
+                        double taxaAquecimentoCalculoTemperaturaInicial = 1.1, taxaResfriamentoCalculoTemperaturaInicial = 0.95, fatorAlteracaoTemperatura = 0.995, temperaturaFinal = 0.01;
+                        double temperaturaInicial = 10.0;
+                        temperaturaInicial = ConstrutorSolucao.CalcularTemperaturaInicialSimulatedAnealling(solucao, distancias, taxaAquecimentoCalculoTemperaturaInicial, taxaResfriamentoCalculoTemperaturaInicial, numMaximoIteracoesTemperatura, temperaturaInicial);
                         ConstrutorSolucao.SimulatedAnnealing(solucao, distancias, fatorAlteracaoTemperatura, numMaximoIteracoesTemperatura, temperaturaInicial, temperaturaFinal);
 
                         titulo = "[06] Simulated Annealing";

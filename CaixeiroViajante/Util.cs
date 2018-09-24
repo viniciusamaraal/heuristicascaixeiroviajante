@@ -84,6 +84,19 @@ namespace CaixeiroViajante
                     posicao2 = random.Next(valorMinimo, valorMaximo);
                 } while (posicao1 == posicao2);
             }
+
+            public static List<int> CalcularDiferencaEntreDoisVetores(int[] vetor1, int[] vetor2)
+            {
+                var resultado = new List<int>();
+
+                for (int i = 0; i < vetor1.Length; i++)
+                {
+                    if (vetor1[i] != vetor2[i])
+                        resultado.Add(i);
+                }
+
+                return resultado;
+            }
         }
 
         public static class Impressao
