@@ -295,6 +295,8 @@ namespace CaixeiroViajante
         public static double SimulatedAnnealing(int[] solucaoAtual, double[,] distancias, double fatorAlteracaoTemperatura, int numMaximoIteracoesTemperatura,
             double temperaturaInicial, double temperaturaFinal)
         {
+            int qtdTotalIteracoes = 0, qtdTotalSolucoesMelhora = 0, qtdSolucoesPiorAceitas = 0, qtdTotalSolucoesNaoAceitas = 0;
+
             int iteracaoAtualTemperatura = 0, iTroca = -1, jTroca = -1, aux = 0;
             double resultadoFOMelhorSolucao, resultadoFOSolucaoAtual, delta1 = 0, delta2 = 0, deltaFinal = 0;
 
@@ -306,6 +308,8 @@ namespace CaixeiroViajante
             {
                 while (iteracaoAtualTemperatura < numMaximoIteracoesTemperatura)
                 {
+                    qtdTotalIteracoes++;
+
                     iteracaoAtualTemperatura++;
                     
                     Util.Calculo.CalcularDuasPosicoesAleatoriasDiferentes(0, solucaoAtual.Length, ref iTroca, ref jTroca);
@@ -322,6 +326,7 @@ namespace CaixeiroViajante
                     // verifica se a solução gerada é melhor que a solução atual
                     if (deltaFinal < 0)
                     {
+                        qtdTotalSolucoesMelhora++; // apenas teste
                         resultadoFOSolucaoAtual = resultadoFOSolucaoAtual + deltaFinal;
 
                         // verifica se a solução gerada é melhor que a melhor das soluções encontradas
@@ -338,13 +343,18 @@ namespace CaixeiroViajante
 
                         // verifica o grau de aceitação da solução de piora baseado na temperatura atual
                         if (x < Math.Exp(-deltaFinal / temperaturaInicial))
+                        {
+                            qtdSolucoesPiorAceitas++; // apenas teste
                             resultadoFOSolucaoAtual = resultadoFOSolucaoAtual + deltaFinal;
+                        }
                         else
                         {
+                            qtdTotalSolucoesNaoAceitas++; // apenas teste
+
                             // Caso a solução não seja aceita desfaz a troca
-                            aux = solucaoAtual[iTroca];
-                            solucaoAtual[iTroca] = solucaoAtual[jTroca];
-                            solucaoAtual[jTroca] = aux;
+                            aux = solucaoAtual[jTroca];
+                            solucaoAtual[jTroca] = solucaoAtual[iTroca];
+                            solucaoAtual[iTroca] = aux;
                         }
                     }
                 }
@@ -361,8 +371,7 @@ namespace CaixeiroViajante
         public static double CalcularTemperaturaInicialSimulatedAnealling(int[] solucaoAtual, double[,] distancias, 
             double taxaAquecimento, double taxaResfriamento, int numMaximoIteracoesTemperatura, double temperaturaInicial)
         {
-            int iTroca = -1, jTroca
-                = -1, aux, iteracaoAtual = 0, aceitos = 0;
+            int iTroca = -1, jTroca = -1, aux, iteracaoAtual = 0, aceitos = 0;
             double delta1 = 0, delta2 = 0, deltaFinal = 0;
             bool continua = true;
 
@@ -566,6 +575,23 @@ namespace CaixeiroViajante
             }
 
             return solucaoPerturbada;
+        }
+
+        #endregion
+
+        #region [ GRASP ]
+
+        public static double Grasp(int[] solucaoAtual, double[,] distancias, double taxaAceitacaoSolucoes, int numMaximoIteracoes) //  = 0.1 1200
+        {
+            int iterAtual = 0;
+            double resultadoFOMelhorSolucao = int.MaxValue;
+
+            while (iterAtual < numMaximoIteracoes)
+            {
+
+            }
+
+            return 0;
         }
 
         #endregion

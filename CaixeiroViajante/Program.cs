@@ -120,10 +120,10 @@ namespace CaixeiroViajante
                         if (solucao == null)
                             solucao = ConstrutorSolucao.VizinhoMaisProximo(numeroCidades, distancias);
 
-                        int numMaximoIteracoesTemperatura = 300;
-                        double taxaAquecimentoCalculoTemperaturaInicial = 1.1, taxaResfriamentoCalculoTemperaturaInicial = 0.95, fatorAlteracaoTemperatura = 0.995, temperaturaFinal = 0.01;
+                        int numMaximoIteracoesTemperatura = 500;
+                        double taxaAquecimentoCalculoTemperaturaInicial = 1.1, taxaResfriamentoCalculoTemperaturaInicial = 0.95, fatorAlteracaoTemperatura = 0.99, temperaturaFinal = 0.01;
                         double temperaturaInicial = 10.0;
-                        temperaturaInicial = ConstrutorSolucao.CalcularTemperaturaInicialSimulatedAnealling(solucao, distancias, taxaAquecimentoCalculoTemperaturaInicial, taxaResfriamentoCalculoTemperaturaInicial, numMaximoIteracoesTemperatura, temperaturaInicial);
+                        temperaturaInicial = 1500;//ConstrutorSolucao.CalcularTemperaturaInicialSimulatedAnealling(solucao, distancias, taxaAquecimentoCalculoTemperaturaInicial, taxaResfriamentoCalculoTemperaturaInicial, numMaximoIteracoesTemperatura, temperaturaInicial);
                         ConstrutorSolucao.SimulatedAnnealing(solucao, distancias, fatorAlteracaoTemperatura, numMaximoIteracoesTemperatura, temperaturaInicial, temperaturaFinal);
 
                         titulo = "[06] Simulated Annealing";
@@ -153,7 +153,12 @@ namespace CaixeiroViajante
                         Util.Impressao.ImprimirResultadoExecucao(titulo, solucao, distancias);
                         break;
                     case "09":
-                        Console.WriteLine("Não implementado");
+                        double taxaAceitacaoSolucoesGrasp = 0.1;
+                        int numMaximoIteracoesGrasp = 1200;
+
+                        ConstrutorSolucao.Grasp(solucao, distancias, taxaAceitacaoSolucoesGrasp, numMaximoIteracoesGrasp);
+                        titulo = "[09] GRASP";
+                        Util.Impressao.ImprimirResultadoExecucao(titulo, solucao, distancias);
                         break;
                     case "10":
                         Console.WriteLine("Não implementado");
