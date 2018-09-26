@@ -59,9 +59,32 @@ namespace CaixeiroViajante
             return solucao;
         }
 
-        public static int[] ParcialmenteGulosaVizinhoMaisProximo(int numeroCidades)
+        public static int[] ParcialmenteGulosaVizinhoMaisProximo(int numeroCidades, double[,] distancias, double fatorConsideracaoListaCandidatos)
         {
             var solucao = new int[numeroCidades];
+            solucao[0] = 0;
+
+            var cidadesNaoVisitadas = new List<Cidade>();
+            for (int i = 1; i < numeroCidades; i++)
+                cidadesNaoVisitadas.Add(new Cidade { Numero = i });
+
+            int contadorCidadesInseridas = 1;
+            while (contadorCidadesInseridas < numeroCidades)
+            {
+                foreach (var cidade in cidadesNaoVisitadas)
+                    cidade.Custo = distancias[contadorCidadesInseridas - 1, cidade.Numero];
+
+                cidadesNaoVisitadas = cidadesNaoVisitadas.OrderBy(x => x.Custo).ToList();
+
+                int numeroCandidatosConsiderar = (int)Math.Max(1, fatorConsideracaoListaCandidatos * cidadesNaoVisitadas.Count);
+                int indiceProximoRegistro = new Random().Next(0, numeroCandidatosConsiderar);
+
+                var cidadeEscolhida = cidadesNaoVisitadas[indiceProximoRegistro];
+                cidadesNaoVisitadas.Remove(cidadeEscolhida);
+                solucao[contadorCidadesInseridas] = cidadeEscolhida.Numero;
+
+                contadorCidadesInseridas++;
+            }
 
             return solucao;
         }
@@ -122,7 +145,7 @@ namespace CaixeiroViajante
 
             double resultadoFOMelhorVizinho = resultadoFOAtual;
 
-            for (int i = 0; i < solucaoAtual.Length - 1; i++)
+            for (int i = 1; i < solucaoAtual.Length - 1; i++)
             {
                 for (int j = i + 1; j < solucaoAtual.Length; j++)
                 {
@@ -186,7 +209,7 @@ namespace CaixeiroViajante
             int aux;
             int posicao1 = 0, posicao2 = 0;
 
-            Util.Calculo.CalcularDuasPosicoesAleatoriasDiferentes(0, solucaoAtual.Length, ref posicao1, ref posicao2);
+            Util.Calculo.CalcularDuasPosicoesAleatoriasDiferentes(1, solucaoAtual.Length, ref posicao1, ref posicao2);
 
             double delta1 = CalcularDelta(solucaoAtual.Length, solucaoAtual, distancias, posicao1, posicao2);
 
@@ -256,7 +279,7 @@ namespace CaixeiroViajante
 
             double resultadoFOMelhorVizinho = resultadoFOAtual;
 
-            for (int i = 0; i < solucaoAtual.Length - 1 && !encontrou; i++)
+            for (int i = 1; i < solucaoAtual.Length - 1 && !encontrou; i++)
             {
                 for (int j = i + 1; j < solucaoAtual.Length && !encontrou; j++)
                 {
@@ -312,7 +335,7 @@ namespace CaixeiroViajante
 
                     iteracaoAtualTemperatura++;
                     
-                    Util.Calculo.CalcularDuasPosicoesAleatoriasDiferentes(0, solucaoAtual.Length, ref iTroca, ref jTroca);
+                    Util.Calculo.CalcularDuasPosicoesAleatoriasDiferentes(1, solucaoAtual.Length, ref iTroca, ref jTroca);
                     delta1 = CalcularDelta(solucaoAtual.Length, solucaoAtual, distancias, iTroca, jTroca);
 
                     aux = solucaoAtual[jTroca];
@@ -384,7 +407,7 @@ namespace CaixeiroViajante
                 {
                     iteracaoAtual++;
 
-                    Util.Calculo.CalcularDuasPosicoesAleatoriasDiferentes(0, solucaoAtual.Length, ref iTroca, ref jTroca);
+                    Util.Calculo.CalcularDuasPosicoesAleatoriasDiferentes(1, solucaoAtual.Length, ref iTroca, ref jTroca);
                     delta1 = CalcularDelta(solucaoAtual.Length, solucaoAtual, distancias, iTroca, jTroca);
 
                     aux = solucaoAtual[jTroca];
@@ -477,7 +500,7 @@ namespace CaixeiroViajante
 
             double resultadoFOMelhorVizinho = int.MaxValue;
 
-            for (int i = 0; i < solucaoAtual.Length - 1; i++)
+            for (int i = 1; i < solucaoAtual.Length - 1; i++)
             {
                 for (int j = i + 1; j < solucaoAtual.Length; j++)
                 {
@@ -565,7 +588,7 @@ namespace CaixeiroViajante
             int numeroTrocas = 0;
             while (numeroTrocas < nivelAtual)
             {
-                Util.Calculo.CalcularDuasPosicoesAleatoriasDiferentes(0, solucaoAtual.Length, ref posicao1, ref posicao2);
+                Util.Calculo.CalcularDuasPosicoesAleatoriasDiferentes(1, solucaoAtual.Length, ref posicao1, ref posicao2);
 
                 aux = solucaoPerturbada[posicao1];
                 solucaoPerturbada[posicao1] = solucaoPerturbada[posicao2];
@@ -581,17 +604,31 @@ namespace CaixeiroViajante
 
         #region [ GRASP ]
 
-        public static double Grasp(int[] solucaoAtual, double[,] distancias, double taxaAceitacaoSolucoes, int numMaximoIteracoes) //  = 0.1 1200
+        public static double Grasp(ref int[] solucaoAtual, double[,] distancias, int numMaximoIteracoes, double taxaAceitacaoSolucoes) //  = 0.1 1200
         {
             int iterAtual = 0;
-            double resultadoFOMelhorSolucao = int.MaxValue;
+            double resultadoFOMelhorSolucao, resultadoFOSOlucaoAtual;
+            
+            var melhorSolucao = new int[solucaoAtual.Length];
+            resultadoFOMelhorSolucao = int.MaxValue;
 
             while (iterAtual < numMaximoIteracoes)
             {
+                iterAtual++;
 
+                solucaoAtual = ParcialmenteGulosaVizinhoMaisProximo(solucaoAtual.Length, distancias, taxaAceitacaoSolucoes);
+                resultadoFOSOlucaoAtual = DescidaBestImprovement(solucaoAtual, distancias);
+
+                if (resultadoFOSOlucaoAtual < resultadoFOMelhorSolucao)
+                {
+                    resultadoFOMelhorSolucao = resultadoFOSOlucaoAtual;
+                    Array.Copy(solucaoAtual, melhorSolucao, solucaoAtual.Length);
+                }
             }
 
-            return 0;
+            Array.Copy(melhorSolucao, solucaoAtual, solucaoAtual.Length);
+
+            return resultadoFOMelhorSolucao;
         }
 
         #endregion

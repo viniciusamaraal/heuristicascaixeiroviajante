@@ -12,9 +12,9 @@ namespace CaixeiroViajante
         {
             int aux, posicao1 = 0, posicao2 = 0;
 
-            for (int i = 0; i < vetor.Length; i++)
+            for (int i = 1; i < vetor.Length * 100; i++)
             {
-                Util.Calculo.CalcularDuasPosicoesAleatoriasDiferentes(0, vetor.Length, ref posicao1, ref posicao2);
+                Util.Calculo.CalcularDuasPosicoesAleatoriasDiferentes(1, vetor.Length, ref posicao1, ref posicao2);
 
                 aux = vetor[posicao1];
                 vetor[posicao1] = vetor[posicao2];

@@ -68,8 +68,11 @@ namespace CaixeiroViajante
                         Util.Impressao.ImprimirResultadoExecucao(titulo, solucao, distancias);
                         break;
                     case "01b":
+                        double fatorConsideracaoListaCandidatos = 0.2;
+                        solucao = ConstrutorSolucao.ParcialmenteGulosaVizinhoMaisProximo(numeroCidades, distancias, fatorConsideracaoListaCandidatos);
+
                         titulo = "[01b] Solução parcialmente gulosa (vizinho mais próximo)";
-                        Console.WriteLine("Não implementado");
+                        Util.Impressao.ImprimirResultadoExecucao(titulo, solucao, distancias);
                         break;
                     case "01c":
                         titulo = "[01c] Solução gulosa (inserção mais barata)";
@@ -153,10 +156,13 @@ namespace CaixeiroViajante
                         Util.Impressao.ImprimirResultadoExecucao(titulo, solucao, distancias);
                         break;
                     case "09":
-                        double taxaAceitacaoSolucoesGrasp = 0.1;
-                        int numMaximoIteracoesGrasp = 1200;
+                        if (solucao == null)
+                            solucao = ConstrutorSolucao.Aleatoria(numeroCidades);
 
-                        ConstrutorSolucao.Grasp(solucao, distancias, taxaAceitacaoSolucoesGrasp, numMaximoIteracoesGrasp);
+                        double fatorConsideracaoListaCandidatosGrasp = 0.1;
+                        int numMaximoIteracoesGrasp = 500;
+
+                        ConstrutorSolucao.Grasp(ref solucao, distancias, numMaximoIteracoesGrasp, fatorConsideracaoListaCandidatosGrasp);
                         titulo = "[09] GRASP";
                         Util.Impressao.ImprimirResultadoExecucao(titulo, solucao, distancias);
                         break;
