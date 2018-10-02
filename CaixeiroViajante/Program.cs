@@ -169,7 +169,7 @@ namespace CaixeiroViajante
                         double fatorConsideracaoListaCandidatosGrasp = 0.1;
                         int numMaximoIteracoesGrasp = 500;
 
-                        ConstrutorSolucao.Grasp(ref solucao, distancias, numMaximoIteracoesGrasp, fatorConsideracaoListaCandidatosGrasp);
+                        ConstrutorSolucao.Grasp(solucao, distancias, numMaximoIteracoesGrasp, fatorConsideracaoListaCandidatosGrasp);
                         titulo = "[09] GRASP";
                         Util.Impressao.ImprimirResultadoExecucao(titulo, solucao, distancias);
                         break;

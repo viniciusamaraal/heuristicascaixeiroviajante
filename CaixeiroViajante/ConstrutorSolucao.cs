@@ -473,7 +473,7 @@ namespace CaixeiroViajante
                 matrizTabu[melhor_j, melhor_i] = iterAtual + numIteracoesProibicao;
 
                 // Verifica se a solução vizinha é melhor que a melhor solução encontrada até o momento
-                if (resultadoFOMelhorVizinho < resultadoFOMelhorSolucao)
+                if (Math.Round(resultadoFOMelhorVizinho, 5) < Math.Round(resultadoFOMelhorSolucao, 5))
                 {
                     melhorIter = iterAtual;
                     resultadoFOMelhorSolucao = resultadoFOMelhorVizinho;
@@ -511,6 +511,7 @@ namespace CaixeiroViajante
 
                     resultadoFOVizinho = resultadoFOAtual - delta1 + delta2;
                     
+                    // se a lista tabu não restringe o elemento ou, mesmo que haja restrição, o resultado da função objetivo encontrado no momento é melhor que a melhor solução (fo_star)
                     if (matrizRestricoes[i, j] < iteracaoAtual || resultadoFOVizinho < resultadoFOMelhorSolucao)
                     {
                         if (resultadoFOVizinho < resultadoFOMelhorVizinho)
@@ -600,19 +601,20 @@ namespace CaixeiroViajante
 
         #region [ GRASP ]
 
-        public static double Grasp(ref int[] solucaoAtual, double[,] distancias, int numMaximoIteracoes, double taxaAceitacaoSolucoes) //  = 0.1 1200
+        public static double Grasp(int[] solucaoAtual, double[,] distancias, int numMaximoIteracoes, double taxaAceitacaoSolucoes) //  = 0.1 1200
         {
             int iterAtual = 0;
             double resultadoFOMelhorSolucao, resultadoFOSOlucaoAtual;
             
             var melhorSolucao = new int[solucaoAtual.Length];
-            resultadoFOMelhorSolucao = int.MaxValue;
+            Array.Copy(solucaoAtual, melhorSolucao, solucaoAtual.Length);
+            resultadoFOMelhorSolucao = Util.Calculo.CalcularFuncaoObjetivo(solucaoAtual, distancias);
 
             while (iterAtual < numMaximoIteracoes)
             {
                 iterAtual++;
 
-                solucaoAtual = ParcialmenteGulosaVizinhoMaisProximo(solucaoAtual.Length, distancias, taxaAceitacaoSolucoes);
+                Array.Copy(ParcialmenteGulosaVizinhoMaisProximo(solucaoAtual.Length, distancias, taxaAceitacaoSolucoes), solucaoAtual, solucaoAtual.Length);
                 resultadoFOSOlucaoAtual = DescidaBestImprovement(solucaoAtual, distancias);
 
                 if (resultadoFOSOlucaoAtual < resultadoFOMelhorSolucao)
