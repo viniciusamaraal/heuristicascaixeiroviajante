@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace CaixeiroViajante
@@ -11,52 +12,82 @@ namespace CaixeiroViajante
     {
         public static class Arquivo
         {
-            public static int LerNumeroCidades(string nomeArquivo) // Util.cpp -> obter_parametros_pcv
+            public static class Professor
             {
-                int numeroCidades = 0;
-
-                using (var leitorArquivo = new StreamReader(nomeArquivo))
+                public static int LerNumeroCidades(string nomeArquivo) // Util.cpp -> obter_parametros_pcv
                 {
-                    string linhaArquivo = leitorArquivo.ReadLine();
-                    numeroCidades = linhaArquivo.Split(' ').Select(x => int.Parse(x)).First();
+                    int numeroCidades = 0;
+
+                    using (var leitorArquivo = new StreamReader(nomeArquivo))
+                    {
+                        string linhaArquivo = leitorArquivo.ReadLine();
+                        numeroCidades = linhaArquivo.Split(' ').Select(x => int.Parse(x)).First();
+                    }
+
+                    return numeroCidades;
                 }
 
-                return numeroCidades;
-            }
-
-            public static double[,] LerMatrizDistancias(string nomeArquivo, int numeroCidades) // Util.cpp -> le_arq_matriz
-            {
-                var matrizDistancias = new double[numeroCidades, numeroCidades];
-
-                var vet_x = new int[numeroCidades];
-                var vet_y = new int[numeroCidades];
-
-                using (var leitorArquivo = new StreamReader(nomeArquivo))
+                public static double[,] LerMatrizDistancias(string nomeArquivo, int numeroCidades) // Util.cpp -> le_arq_matriz
                 {
-                    string linhaArquivo = leitorArquivo.ReadLine();
+                    var matrizDistancias = new double[numeroCidades, numeroCidades];
 
-                    do
+                    var vet_x = new int[numeroCidades];
+                    var vet_y = new int[numeroCidades];
+
+                    using (var leitorArquivo = new StreamReader(nomeArquivo))
                     {
-                        int[] parametrosLinha = linhaArquivo.Split(' ').Select(x => int.Parse(x)).ToArray();
+                        string linhaArquivo = leitorArquivo.ReadLine();
 
-                        vet_x[parametrosLinha[0]] = parametrosLinha[1];
-                        vet_y[parametrosLinha[0]] = parametrosLinha[2];
-
-                        linhaArquivo = leitorArquivo.ReadLine();
-                    } while (!string.IsNullOrEmpty(linhaArquivo));
-
-                    for (int i = 0; i < numeroCidades - 1; i++)
-                    {
-                        matrizDistancias[i, i] = 0;
-                        for (int j = i + 1; j < numeroCidades; j++)
+                        do
                         {
-                            matrizDistancias[i, j] = Math.Sqrt(Math.Pow(vet_x[i] - vet_x[j], 2) + Math.Pow(vet_y[i] - vet_y[j], 2));
-                            matrizDistancias[j, i] = matrizDistancias[i, j];
+                            int[] parametrosLinha = linhaArquivo.Split(' ').Select(x => int.Parse(x)).ToArray();
+
+                            vet_x[parametrosLinha[0]] = parametrosLinha[1];
+                            vet_y[parametrosLinha[0]] = parametrosLinha[2];
+
+                            linhaArquivo = leitorArquivo.ReadLine();
+                        } while (!string.IsNullOrEmpty(linhaArquivo));
+
+                        for (int i = 0; i < numeroCidades - 1; i++)
+                        {
+                            matrizDistancias[i, i] = 0;
+                            for (int j = i + 1; j < numeroCidades; j++)
+                            {
+                                matrizDistancias[i, j] = Math.Sqrt(Math.Pow(vet_x[i] - vet_x[j], 2) + Math.Pow(vet_y[i] - vet_y[j], 2));
+                                matrizDistancias[j, i] = matrizDistancias[i, j];
+                            }
                         }
                     }
-                }
 
-                return matrizDistancias;
+                    return matrizDistancias;
+                }
+            }
+            
+            public static class P01
+            {
+                public static double[,] LerMatrizDistancias(string nomeArquivo, int numeroCidades)
+                {
+                    var matrizDistancias = new double[numeroCidades, numeroCidades];
+
+                    using (var leitorArquivo = new StreamReader(nomeArquivo))
+                    {
+                        string linhaArquivo = leitorArquivo.ReadLine();
+                        linhaArquivo = leitorArquivo.ReadLine();
+
+                        int numeroLinha = 0;
+                        do
+                        {
+                            double[] parametrosLinha = linhaArquivo.Split(' ').Select(x => double.Parse(x)).ToArray();
+                            for (int i = 0; i < parametrosLinha.Length; i++)
+                                matrizDistancias[numeroLinha, i] = parametrosLinha[i];
+
+                            numeroLinha++;
+                            linhaArquivo = leitorArquivo.ReadLine();
+                        } while (!string.IsNullOrEmpty(linhaArquivo));
+                    }
+
+                    return matrizDistancias;
+                }
             }
         }
         

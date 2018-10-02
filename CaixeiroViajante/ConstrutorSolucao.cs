@@ -478,10 +478,6 @@ namespace CaixeiroViajante
                     melhorIter = iterAtual;
                     resultadoFOMelhorSolucao = resultadoFOMelhorVizinho;
 
-                    int aux2 = melhorSolucao[melhor_i];
-                    melhorSolucao[melhor_i] = melhorSolucao[melhor_j];
-                    melhorSolucao[melhor_j] = aux2;
-
                     Array.Copy(solucaoAtual, melhorSolucao, solucaoAtual.Length);
                 }
             }

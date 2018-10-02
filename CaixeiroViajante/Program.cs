@@ -15,12 +15,19 @@ namespace CaixeiroViajante
             string opcao;
             bool encerrarExecucao, opcaoInvalida;
             string titulo = string.Empty;
+            int numeroCidades = 0;
+            double[,] distancias = null;
 
             int[] solucao = null;
 
-            int numeroCidades = Util.Arquivo.LerNumeroCidades("C50INFO.txt");
-            double[,] distancias = Util.Arquivo.LerMatrizDistancias("C50.txt", numeroCidades);
-            
+            // Instância fornecida pelo professor
+            numeroCidades = Util.Arquivo.Professor.LerNumeroCidades("..\\..\\_instancias\\professor\\C50INFO.txt");
+            distancias = Util.Arquivo.Professor.LerMatrizDistancias("..\\..\\_instancias\\professor\\C50.txt", numeroCidades);
+
+            // Instância obtida na internet com um número menor de cidades. Fonte: https://people.sc.fsu.edu/~jburkardt/datasets/tsp/tsp.html
+            //numeroCidades = 15;
+            //distancias = Util.Arquivo.P01.LerMatrizDistancias("..\\..\\_instancias\\p01_15\\TSP_IO_PRB_15.txt", numeroCidades);
+
             do
             {
                 encerrarExecucao = opcaoInvalida = false;
