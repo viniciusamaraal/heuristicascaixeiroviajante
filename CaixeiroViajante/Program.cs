@@ -137,8 +137,8 @@ namespace CaixeiroViajante
                         if (solucao == null)
                             solucao = ConstrutorSolucao.Aleatoria(numeroCidades);
 
-                        int numMaximoIteracoesSemMelhoraILS = 300;
-                        int numIteracoesProibicao = 15;
+                        int numMaximoIteracoesSemMelhoraILS = 50;
+                        int numIteracoesProibicao = 7;
                         ConstrutorSolucao.BuscaTabu(solucao, distancias, numMaximoIteracoesSemMelhoraILS, numIteracoesProibicao);
 
                         titulo = "[07] Busca Tabu";

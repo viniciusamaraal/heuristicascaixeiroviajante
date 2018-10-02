@@ -473,7 +473,7 @@ namespace CaixeiroViajante
                 matrizTabu[melhor_j, melhor_i] = iterAtual + numIteracoesProibicao;
 
                 // Verifica se a solução vizinha é melhor que a melhor solução encontrada até o momento
-                if (Math.Round(resultadoFOMelhorVizinho, 2) < Math.Round(resultadoFOMelhorSolucao, 2))
+                if (resultadoFOMelhorVizinho < resultadoFOMelhorSolucao)
                 {
                     melhorIter = iterAtual;
                     resultadoFOMelhorSolucao = resultadoFOMelhorVizinho;
