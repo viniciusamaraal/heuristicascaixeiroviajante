@@ -145,7 +145,7 @@ namespace CaixeiroViajante
 
             double resultadoFOMelhorVizinho = resultadoFOAtual;
 
-            for (int i = 1; i < solucaoAtual.Length - 1; i++)
+            for (int i = 0; i < solucaoAtual.Length - 1; i++)
             {
                 for (int j = i + 1; j < solucaoAtual.Length; j++)
                 {
@@ -279,7 +279,7 @@ namespace CaixeiroViajante
 
             double resultadoFOMelhorVizinho = resultadoFOAtual;
 
-            for (int i = 1; i < solucaoAtual.Length - 1 && !encontrou; i++)
+            for (int i = 0; i < solucaoAtual.Length - 1 && !encontrou; i++)
             {
                 for (int j = i + 1; j < solucaoAtual.Length && !encontrou; j++)
                 {
@@ -496,7 +496,7 @@ namespace CaixeiroViajante
 
             double resultadoFOMelhorVizinho = int.MaxValue;
 
-            for (int i = 1; i < solucaoAtual.Length - 1; i++)
+            for (int i = 0; i < solucaoAtual.Length - 1; i++)
             {
                 for (int j = i + 1; j < solucaoAtual.Length; j++)
                 {

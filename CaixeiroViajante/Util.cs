@@ -100,7 +100,7 @@ namespace CaixeiroViajante
                 for (int i = 0; i < solucao.Length - 1; i++)
                     distanciaPercorrida += matrizDistancias[solucao[i], solucao[i + 1]];
 
-                distanciaPercorrida += matrizDistancias[solucao[solucao.Length - 1], 0];
+                distanciaPercorrida += matrizDistancias[solucao[solucao.Length - 1], solucao[0]];
 
                 return distanciaPercorrida;
             }
